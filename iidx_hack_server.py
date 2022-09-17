@@ -33,8 +33,12 @@ class IIDXHackTCPHandler(socketserver.BaseRequestHandler):
             if self.data[0] == 0b11000110: # press key 6
                 self.gamepad.press_button(button=vgamepad.DS4_BUTTONS.DS4_BUTTON_SHOULDER_RIGHT)
             if self.data[0] == 0b11000111: # press key 7
-                ## assigned to what is button 10 in the HTML5 gamepad api; I cannot seem to activate
-                ## button 6, what it should be, with vgamepad
+                ## vgamepad doesn't seem to have a way to press Button 7, at least not in a way
+                ## that the HTML5 Gamepad API will see, which bothers me. I could use the left
+                ## trigger, but using an axis for a key input seems to cause major problems in
+                ## beatoraja so I'm opting to use the left thumbstick button instead.
+                ## I hope this doesn't cause problems with Infinitas lmao but I believe you
+                ## can set your keybindings in that game so hopefully it wouldn't be a problem.
                 self.gamepad.press_button(button=vgamepad.DS4_BUTTONS.DS4_BUTTON_THUMB_LEFT)
             if self.data[0] == 0b11001000: # e1
                 self.gamepad.press_button(button=vgamepad.DS4_BUTTONS.DS4_BUTTON_SHARE)
@@ -54,8 +58,7 @@ class IIDXHackTCPHandler(socketserver.BaseRequestHandler):
             if self.data[0] == 0b11100110: # press key 6
                 self.gamepad.release_button(button=vgamepad.DS4_BUTTONS.DS4_BUTTON_SHOULDER_RIGHT)
             if self.data[0] == 0b11100111: # press key 7
-                ## assigned to what is button 10 in the HTML5 gamepad api; I cannot seem to activate
-                ## button 6, what it should be, with vgamepad
+                ## see the equivalent comment in the press section
                 self.gamepad.release_button(button=vgamepad.DS4_BUTTONS.DS4_BUTTON_THUMB_LEFT)
             if self.data[0] == 0b11101000: # e1
                 self.gamepad.release_button(button=vgamepad.DS4_BUTTONS.DS4_BUTTON_SHARE)
