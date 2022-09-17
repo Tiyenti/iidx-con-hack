@@ -63,7 +63,10 @@ class IIDXHackTCPHandler(socketserver.BaseRequestHandler):
                 self.gamepad.release_button(button=vgamepad.DS4_BUTTONS.DS4_BUTTON_OPTIONS)
             ## Turntable
             if self.data[0] == 0b11110000: # turntable axis in the next 4 bytes
-                pass
+                ## raw value is -127 to 127, it seems; on the client end I add
+                ## 127 to the value so it's within the range of 0-254 so i can just
+                ## send the raw int as a byte.  
+                self.gamepad.left_joystick(self.data[1], 128)
             if not self.gamepad == None:
                 self.gamepad.update()
         pass
