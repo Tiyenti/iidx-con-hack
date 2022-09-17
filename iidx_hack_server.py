@@ -4,6 +4,7 @@ import socketserver, vgamepad
 
 class IIDXHackTCPHandler(socketserver.BaseRequestHandler):
     def handle(self):
+        self.gamepad = None
         while True:
             self.data = self.request.recv(49)
             if self.data[0] == 0b00000001: #connection state change
@@ -63,7 +64,8 @@ class IIDXHackTCPHandler(socketserver.BaseRequestHandler):
             ## Turntable
             if self.data[0] == 0b11110000: # turntable axis in the next 4 bytes
                 pass
-            self.gamepad.update()
+            if not self.gamepad == None:
+                self.gamepad.update()
         pass
 
 with socketserver.TCPServer(('127.0.0.1', 44717), IIDXHackTCPHandler) as server:
