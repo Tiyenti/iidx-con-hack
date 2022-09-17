@@ -79,6 +79,8 @@ while True:
                 s.send(bytearray([0b11001001]))
             else:
                 s.send(bytearray([0b11101001]))
+        if event.code == 'ABS_X':
+            s.send(bytearray([0b11110000, event.state + 127]))
 
     #time.sleep(0.01)
     pass
