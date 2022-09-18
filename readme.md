@@ -66,29 +66,24 @@ I have not thouroughly tested this yet, so there may be some problems.
 * It has so far been tested on a Windows 10 Home host with an Ubuntu virtual machine,
   using the workaround to play *beatoraja*. This appears to work alright.
 * **One potential issue:** One time during my initial hour or so of testing this, I had a
-  problem where a key got stuck being held down. This however has so far only happened once.
-  At this time I am not sure if this was due to the controller itself, or something to do
-  with my code (perhaps an input release event was not sent properly, or was dropped due to being
-  recieved at the same time as another event, and I so far am only checking 1 byte of data
-  at a time, potentially casuing problems).
-* I will most likely be using this solution for my beatmania sessions for the forseeable
-  future so if any issues become apparent I will definitely become aware of them lmao
+  problem where a key got stuck being held down; I assume this was due to the key release event being recieved at the same time as a different event, which resulted in my code dropping it since at the time I only checked 1 byte of the recieved data. Since then I have updated the protocol slightly so hopefully this isn't going to be a problem in the future but I will have to keep testing for now.
+* This is likely how I'll be playing BMS and such with my controller for the near future so if any issues become apparent I will definitely become aware of them eventually lmao
 
 ## Implementation notes
 * The **server** is run on the Windows host, and recieves the inputs sent from
   the **client**, which runs on the guest VM. The server is hosted on localhost
   on port `44717`.
-* The virtual controller on the Windows side is created as a virtual DS4 controller;
+* The virtual controller on the Windows side is created as a virtual DualShock 4 controller;
   I chose this as I believe this means it's using DirectInput, which as far as I
   am aware is the only controller API that the official *beatmania IIDX INFINITAS*
   client supports. I have not actually tested this with *INFINITAS* yet however as
   I am too lazy to and don't want to spend the money on it right now.
 * There is no specific polling rate set, the client (that processes the inputs) will just
-  send 1 (button) or 2 (turntable) bytes to the server whenever it detects an input. In theory, this should poll
-  at the same rate the controller normally polls at. My testing appeared to show at least 200Hz,
+  send messages of 2 bytes each to the server whenever it detects an input. In theory, this should poll
+  at roughly the same rate the controller normally polls at. My testing appeared to show at least 200Hz,
   probably closer to 220Hz, which I tested with a modified version of this code that instead created an XInput device and used [XInputTest](https://github.com/chrizonix/XInputTest) to
   determine the rate.
-* Raw turntable input is seemingly in the range of -127 to 127 on the guest side in my tests and is converted to a 0 to 254 range by the client before being sent to the server. This *might* cause problems as vgamepad represents analog inputs in a 0 to 255 range, but hopefully it's not too noticeable.
+* Raw turntable input is seemingly in the range of -127 to 127 on the guest side in my tests and is converted to a 0 to 254 range by the client before being sent to the server. This *might* cause problems as vgamepad's DS4 API represents analog inputs in a 0 to 255 range, but hopefully it's not too noticeable.
 * The buttons are bound to the following bindings in the HTML5 gamepad API, according to [gamepad-tester.com](https://gamepad-tester.com/):
   * IIDX: Gamepad API (DS4 Button)
   * Key 1: Button 0 (Cross)
