@@ -10,17 +10,19 @@ class IIDXHackTCPHandler(socketserver.BaseRequestHandler):
         self.dataindex = 0
         self.curmessage = []
         while True:
-            if self.dataindex == len(self.data):
-                self.data = self.request.recv(64)
-                self.dataindex = 0
 
             for msgbyte in self.data:
-                if msgbyte != 0x00:
+                if len(self.curmessage) < 2:
                     self.curmessage.append(msgbyte)
-                else:
+                
+                if len(self.curmessage) == 2:
                     self.readMessage(self.curmessage)
                     self.curmessage = []
-                self.dataindex += 0            
+                self.dataindex += 1
+
+            if self.dataindex == len(self.data):
+                self.data = self.request.recv(64)
+                self.dataindex = 0            
     
     def readMessage(self, message):
         if message[0] == 0b00000001: #connection state change

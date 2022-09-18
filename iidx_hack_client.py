@@ -80,7 +80,7 @@ while True:
             else:
                 s.send(bytearray([0b11101001, 0b00000000]))
         if event.code == 'ABS_X':
-            s.send(bytearray([0b11110000, event.state + 127, 0b00000000]))
+            s.send(bytearray([0b11110000, event.state + 127]))
 
     #time.sleep(0.01)
     pass
