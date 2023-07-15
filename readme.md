@@ -5,6 +5,11 @@ virtual machine back to the host,  intended for if you're stuck in a bizarre
 situation like I was when this controller refused to work normally but ended up
 working fine in a VM.
 
+
+## IMPORTANT
+
+**This workaround does not fully support use with *IIDX INFINITAS*, and may never.** Due to limitations with the library I'm using for this hack, it seems that there is no way to get the game to read analog turntable input from this hack (it only looks at axis 1, which is what the dpad is assigned to and there is seemingly no way to use it as a regular analog axis as far as I can tell.) So, currently, only the buttons are usable there - I may get around to implementing digital turntable logic in order to at least partially support Infinitas but at the moment this workaround is only suitable for use with beatoraja.
+
 ## Requirements
 * Host side:
   * Python 3
@@ -60,24 +65,11 @@ you want to use for it).
 Once both the guest side and host side setup is done, you should now successfully have a working
 IIDX controller.
 
-## Potential issues
-I have not thouroughly tested this yet, so there may be some problems.
-
-* It has so far been tested on a Windows 10 Home host with an Ubuntu virtual machine,
-  using the workaround to play *beatoraja*. This appears to work alright.
-* **One potential issue:** One time during my initial hour or so of testing this, I had a
-  problem where a key got stuck being held down; I assume this was due to the key release event being recieved at the same time as a different event, which resulted in my code dropping it since at the time I only checked 1 byte of the recieved data. Since then I have updated the protocol slightly so hopefully this isn't going to be a problem in the future but I will have to keep testing for now.
-* This is likely how I'll be playing BMS and such with my controller for the near future so if any issues become apparent I will definitely become aware of them eventually lmao
-
 ## Implementation notes
 * The **server** is run on the Windows host, and recieves the inputs sent from
   the **client**, which runs on the guest VM. The server is hosted on localhost
   on port `44717`.
-* The virtual controller on the Windows side is created as a virtual DualShock 4 controller;
-  I chose this as I believe this means it's using DirectInput, which as far as I
-  am aware is the only controller API that the official *beatmania IIDX INFINITAS*
-  client supports. I have not actually tested this with *INFINITAS* yet however as
-  I am too lazy to and don't want to spend the money on it right now.
+* The virtual controller on the Windows side is created as a virtual DualShock 4 controller. At the time of making this hack I assumed that Infinitas wouldn't support xinput devices, although I now know I'm mistaken there. This is just the design decision that I initially went with and it'd take too much effort to change. (It doesn't work with Infinitas properly anyway, though, as mentioned above.)
 * There is no specific polling rate set, the client (that processes the inputs) will just
   send messages of 2 bytes each to the server whenever it detects an input. In theory, this should poll
   at roughly the same rate the controller normally polls at. My testing appeared to show at least 200Hz,
